@@ -22,7 +22,7 @@ class ReviewFactory extends Factory
         $min = 1;
         $max = $books->count();
         return [
-            'book_id' => $max < $min ? fake()->numberBetween($min, $max) : null,
+            'book_id' => fake()->numberBetween($min, $max),
             'review' => fake()->paragraph,
             'rating' => fake()->numberBetween(1, 5),
             'created_at' => fake()->dateTimeBetween('-5 years'),
