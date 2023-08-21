@@ -44,8 +44,32 @@ class Book extends Model
             ->orderBy('reviews_avg_rating', 'desc');
     }
 
-    public function scopeMinReviews(Builder $query, int $minReviews): Builder { //don't work without @method Popular, because don't have column 'reviews_count'
+    public function scopeMinReviews(Builder $query, int $minReviews) : Builder { //don't work without @method Popular, because don't have column 'reviews_count'
         return $query->having('reviews_count', '>=', $minReviews);
+    }
+
+    public function scopePopularLastMonth(Builder $query) : Builder {
+        return $query->popular(now()->subMonth(), now())
+            ->highestRated(now()->subMonth(), now())
+            ->minReviews(2);
+    }
+
+    public function scopePopularLast6Months(Builder $query) : Builder {
+        return $query->popular(now()->subMonths(6), now())
+            ->highestRated(now()->subMonths(6), now())
+            ->minReviews(4);
+    }
+
+    public function scopeHighestRatedLastMonth(Builder $query) : Builder {
+        return $query->highestRated(now()->subMonth(), now())
+            ->popular(now()->subMonth(), now())
+            ->minReviews(2);
+    }
+
+    public function scopeHighestRatedLast6Months(Builder $query) : Builder {
+        return $query->highestRated(now()->subMonths(6), now())
+            ->popular(now()->subMonths(6), now())
+            ->minReviews(4);
     }
 }
 
