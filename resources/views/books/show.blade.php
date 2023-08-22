@@ -2,6 +2,8 @@
 
 @section('content')
 
+    <a href="{{ route('books.index') }}" class="btn flex mb-4">Back</a>
+
     <div class="mb-4">
         <h1 class="sticky top-0 mb-2 text-2xl">{{ $book->title }}</h1>
 
@@ -16,6 +18,12 @@
         </span>
             </div>
         </div>
+    </div>
+
+    <div>
+        <a href="{{route('books.reviews.create', $book)}}" class="reset-link mb-4 flex">
+            Add a Review!
+        </a>
     </div>
 
     <div>
