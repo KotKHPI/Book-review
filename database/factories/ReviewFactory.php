@@ -25,7 +25,7 @@ class ReviewFactory extends Factory
             'book_id' => fake()->numberBetween($min, $max),
             'review' => fake()->paragraph,
             'rating' => fake()->numberBetween(1, 5),
-            'created_at' => fake()->dateTimeBetween('-5 years'),
+            'created_at' => fake()->dateTimeBetween('-9 months'),
             'updated_at' => fake()->dateTimeBetween('created_at')
         ];
     }
