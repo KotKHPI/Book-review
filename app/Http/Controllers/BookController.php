@@ -17,19 +17,18 @@ class BookController extends Controller
 
         $books = Book::when($title, fn($query, $title) => $query->title($title));
 
-
         $books = match ($filter) {
             'popular_last_month' => $books->popularLastMonth(),
             'popular_last_6month' => $books->popularLast6Months(),
             'highest_rated_month' => $books->highestRatedLastMonth(),
             'highest_rated_6month' => $books->highestRatedLast6Months(),
-            default => $books->latest()
+            default => $books->latest()->withReviewsCount()->withAvgRating(),
         };
 
         $cacheKey = 'books:' . $filter . ':' . $title;
-        $books = cache()->remember($cacheKey, 3600, fn() => $books->get());
-
-         return view('books.index', ['books' => $books]);
+//        $books = cache()->remember($cacheKey, 3600, fn() => $books->get());
+        $books = $books->get();
+         return view('books.index', ['books' => $books->paginate(10)->withQueryString()]); //It's working because of supporting macro of AppServiceProvider
     }
 
     /**
@@ -48,18 +47,19 @@ class BookController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Book $book)
+
+    public function show(int $id)
     {
-        $cacheKey = 'book:' . $book->id;
+        $cacheKey = 'book:' . $id;
 
-        $book = cache()->remember($cacheKey, 3600, fn() => $book->load([
+//        $book = cache()->
+//        remember($cacheKey, 3600, fn() => Book::with([
+//            'reviews' => fn($query) => $query->latest()
+//        ])->withReviewsCount()->withAvgRating()->findOrFail($id)
+//        );
+        $book = Book::with([
             'reviews' => fn($query) => $query->latest()
-        ]));
-
-//        dd($book);
+        ])->withReviewsCount()->withAvgRating()->findOrFail($id);
 
         return view('books.show', ['book' => $book]);
     }
